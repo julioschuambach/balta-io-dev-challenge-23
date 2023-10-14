@@ -1,5 +1,6 @@
 using DevChallenge.Data.Contexts;
 using DevChallenge.Helpers;
+using DevChallenge.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -121,6 +122,21 @@ namespace DevChallenge
                                       .ToList();
 
                     return Results.Ok(ibges);
+                }
+                catch (Exception ex)
+                {
+                    return Results.Problem(ex.Message);
+                }
+            });
+
+            app.MapPost("/ibges", ([FromServices] DevChallengeDbContext context, [FromBody] Ibge ibge) =>
+            {
+                try
+                {
+                    context.Ibges.Add(ibge);
+                    context.SaveChanges();
+
+                    return Results.Created($"/ibges/{ibge.Id}", ibge);
                 }
                 catch (Exception ex)
                 {
