@@ -1,4 +1,4 @@
-using System.Text;
+using DevChallenge.Helpers;
 
 namespace DevChallenge
 {
@@ -16,24 +16,13 @@ namespace DevChallenge
 
         private static void MapEndpoints(WebApplication app)
         {
-            app.MapGet("/read-sql-scripts", () =>
+            app.MapGet("/sql-script", () =>
             {
-                List<string> paths = new()
-                {
-                    "..\\..\\Resources\\Scripts\\Schema.sql",
-                    "..\\..\\Resources\\Scripts\\Data.sql",
-                    "..\\..\\Resources\\Scripts\\2021-03-14-06-31_corrige_sigla_estado_roraima.sql"
-                };
-
-                StringBuilder sb = new();
-                foreach (var path in paths)
-                {
-                    sb.Append(File.ReadAllText(path));
-                }
+                var script = ResourcesHelper.GetSqlScript();
 
                 try
                 {
-                    return Results.Ok(sb.ToString());
+                    return Results.Ok(script);
                 }
                 catch (Exception ex)
                 {
