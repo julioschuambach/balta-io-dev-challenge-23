@@ -1,3 +1,4 @@
+using DevChallenge.Api.ViewModels;
 using DevChallenge.Data.Contexts;
 using DevChallenge.Helpers;
 using DevChallenge.Models;
@@ -137,6 +138,29 @@ namespace DevChallenge
                     context.SaveChanges();
 
                     return Results.Created($"/ibges/{ibge.Id}", ibge);
+                }
+                catch (Exception ex)
+                {
+                    return Results.Problem(ex.Message);
+                }
+            });
+
+            app.MapPut("/ibges/{id}", ([FromServices] DevChallengeDbContext context, [FromRoute] string id, [FromBody] IbgeViewModel viewModel) =>
+            {
+                try
+                {
+                    var ibge = context.Ibges.FirstOrDefault(x => x.Id == id);
+
+                    if (ibge == null)
+                    {
+                        return Results.NotFound();
+                    }
+
+                    ibge.Update(viewModel);
+                    context.Ibges.Update(ibge);
+                    context.SaveChanges();
+
+                    return Results.Ok(ibge);
                 }
                 catch (Exception ex)
                 {

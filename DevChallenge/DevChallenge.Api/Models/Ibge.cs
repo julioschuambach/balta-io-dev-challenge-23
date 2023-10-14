@@ -1,4 +1,6 @@
-﻿namespace DevChallenge.Models
+﻿using DevChallenge.Api.ViewModels;
+
+namespace DevChallenge.Models
 {
     public class Ibge
     {
@@ -8,5 +10,8 @@
 
         public Ibge(string id, string state, string city)
             => (Id, State, City) = (id, state, city);
+
+        public void Update(IbgeViewModel viewModel)
+            => (State, City) = (viewModel.State, viewModel.City);
     }
 }
