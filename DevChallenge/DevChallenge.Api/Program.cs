@@ -70,6 +70,27 @@ namespace DevChallenge
                     return Results.Problem(ex.Message);
                 }
             });
+
+            app.MapGet("/ibges/{id}", ([FromServices] DevChallengeDbContext context, [FromRoute] string id) =>
+            {
+                try
+                {
+                    var ibge = context.Ibges
+                                      .AsNoTracking()
+                                      .FirstOrDefault(x => x.Id == id);
+
+                    if (ibge == null)
+                    {
+                        return Results.NotFound();
+                    }
+
+                    return Results.Ok(ibge);
+                }
+                catch (Exception ex)
+                {
+                    return Results.Problem(ex.Message);
+                }
+            });
         }
     }
 }
