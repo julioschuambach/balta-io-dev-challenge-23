@@ -1,4 +1,5 @@
-﻿using DevChallenge.Models;
+﻿using DevChallenge.Api.Data.Mappings;
+using DevChallenge.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace DevChallenge.Data.Contexts
@@ -11,6 +12,11 @@ namespace DevChallenge.Data.Contexts
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlite(_connectionString);
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.ApplyConfiguration(new IbgeMapping());
         }
     }
 }
