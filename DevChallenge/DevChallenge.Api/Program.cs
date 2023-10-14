@@ -167,6 +167,28 @@ namespace DevChallenge
                     return Results.Problem(ex.Message);
                 }
             });
+
+            app.MapDelete("/ibges/{id}", ([FromServices] DevChallengeDbContext context, [FromRoute] string id) =>
+            {
+                try
+                {
+                    var ibge = context.Ibges.FirstOrDefault(x => x.Id == id);
+
+                    if (ibge == null)
+                    {
+                        return Results.NotFound();
+                    }
+
+                    context.Ibges.Remove(ibge);
+                    context.SaveChanges();
+
+                    return Results.Ok(ibge);
+                }
+                catch (Exception ex)
+                {
+                    return Results.Problem(ex.Message);
+                }
+            });
         }
     }
 }
