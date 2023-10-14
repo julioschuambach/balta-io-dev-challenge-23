@@ -1,11 +1,11 @@
 ﻿namespace DevChallenge.Api.ViewModels
 {
-    public class IbgeViewModel
+    public class LocationViewModel
     {
         public string State { get; private set; }
         public string City { get; private set; }
 
-        public IbgeViewModel(string state, string city)
+        public LocationViewModel(string state, string city)
             => (State, City) = (state, city);
     }
 }

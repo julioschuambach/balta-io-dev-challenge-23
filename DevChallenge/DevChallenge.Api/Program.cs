@@ -56,16 +56,16 @@ namespace DevChallenge
                 }
             });
 
-            app.MapGet("/ibges", ([FromServices] DevChallengeDbContext context) =>
+            app.MapGet("/locations", ([FromServices] DevChallengeDbContext context) =>
             {
                 try
                 {
-                    var ibges = context.Ibges
+                    var locations = context.Locations
                                        .AsNoTracking()
                                        .OrderBy(x => x.City)
                                        .ToList();
 
-                    return Results.Ok(ibges);
+                    return Results.Ok(locations);
                 }
                 catch (Exception ex)
                 {
@@ -73,20 +73,20 @@ namespace DevChallenge
                 }
             });
 
-            app.MapGet("/ibges/{id}", ([FromServices] DevChallengeDbContext context, [FromRoute] string id) =>
+            app.MapGet("/locations/{id}", ([FromServices] DevChallengeDbContext context, [FromRoute] string id) =>
             {
                 try
                 {
-                    var ibge = context.Ibges
+                    var location = context.Locations
                                       .AsNoTracking()
                                       .FirstOrDefault(x => x.Id == id);
 
-                    if (ibge == null)
+                    if (location == null)
                     {
                         return Results.NotFound();
                     }
 
-                    return Results.Ok(ibge);
+                    return Results.Ok(location);
                 }
                 catch (Exception ex)
                 {
@@ -94,17 +94,17 @@ namespace DevChallenge
                 }
             });
 
-            app.MapGet("/ibges/cities/{city}", ([FromServices] DevChallengeDbContext context, [FromRoute] string city) =>
+            app.MapGet("/locations/cities/{city}", ([FromServices] DevChallengeDbContext context, [FromRoute] string city) =>
             {
                 try
                 {
-                    var ibges = context.Ibges
+                    var locations = context.Locations
                                        .AsNoTracking()
                                        .Where(x => x.City.ToLower() == city.ToLower())
                                        .OrderBy(x => x.State)
                                        .ToList();
 
-                    return Results.Ok(ibges);
+                    return Results.Ok(locations);
                 }
                 catch (Exception ex)
                 {
@@ -112,17 +112,17 @@ namespace DevChallenge
                 }
             });
 
-            app.MapGet("/ibges/states/{state}", ([FromServices] DevChallengeDbContext context, [FromRoute] string state) =>
+            app.MapGet("/locations/states/{state}", ([FromServices] DevChallengeDbContext context, [FromRoute] string state) =>
             {
                 try
                 {
-                    var ibges = context.Ibges
+                    var locations = context.Locations
                                       .AsNoTracking()
                                       .Where(x => x.State.ToLower() == state.ToLower())
                                       .OrderBy(x => x.City)
                                       .ToList();
 
-                    return Results.Ok(ibges);
+                    return Results.Ok(locations);
                 }
                 catch (Exception ex)
                 {
@@ -130,14 +130,14 @@ namespace DevChallenge
                 }
             });
 
-            app.MapPost("/ibges", ([FromServices] DevChallengeDbContext context, [FromBody] Ibge ibge) =>
+            app.MapPost("/locations", ([FromServices] DevChallengeDbContext context, [FromBody] Location location) =>
             {
                 try
                 {
-                    context.Ibges.Add(ibge);
+                    context.Locations.Add(location);
                     context.SaveChanges();
 
-                    return Results.Created($"/ibges/{ibge.Id}", ibge);
+                    return Results.Created($"/locations/{location.Id}", location);
                 }
                 catch (Exception ex)
                 {
@@ -145,22 +145,22 @@ namespace DevChallenge
                 }
             });
 
-            app.MapPut("/ibges/{id}", ([FromServices] DevChallengeDbContext context, [FromRoute] string id, [FromBody] IbgeViewModel viewModel) =>
+            app.MapPut("/locations/{id}", ([FromServices] DevChallengeDbContext context, [FromRoute] string id, [FromBody] LocationViewModel viewModel) =>
             {
                 try
                 {
-                    var ibge = context.Ibges.FirstOrDefault(x => x.Id == id);
+                    var location = context.Locations.FirstOrDefault(x => x.Id == id);
 
-                    if (ibge == null)
+                    if (location == null)
                     {
                         return Results.NotFound();
                     }
 
-                    ibge.Update(viewModel);
-                    context.Ibges.Update(ibge);
+                    location.Update(viewModel);
+                    context.Locations.Update(location);
                     context.SaveChanges();
 
-                    return Results.Ok(ibge);
+                    return Results.Ok(location);
                 }
                 catch (Exception ex)
                 {
@@ -168,21 +168,21 @@ namespace DevChallenge
                 }
             });
 
-            app.MapDelete("/ibges/{id}", ([FromServices] DevChallengeDbContext context, [FromRoute] string id) =>
+            app.MapDelete("/locations/{id}", ([FromServices] DevChallengeDbContext context, [FromRoute] string id) =>
             {
                 try
                 {
-                    var ibge = context.Ibges.FirstOrDefault(x => x.Id == id);
+                    var location = context.Locations.FirstOrDefault(x => x.Id == id);
 
-                    if (ibge == null)
+                    if (location == null)
                     {
                         return Results.NotFound();
                     }
 
-                    context.Ibges.Remove(ibge);
+                    context.Locations.Remove(location);
                     context.SaveChanges();
 
-                    return Results.Ok(ibge);
+                    return Results.Ok(location);
                 }
                 catch (Exception ex)
                 {

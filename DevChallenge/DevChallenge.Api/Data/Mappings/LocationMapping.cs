@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DevChallenge.Api.Data.Mappings
 {
-    public class IbgeMapping : IEntityTypeConfiguration<Ibge>
+    public class LocationMapping : IEntityTypeConfiguration<Location>
     {
-        public void Configure(EntityTypeBuilder<Ibge> builder)
+        public void Configure(EntityTypeBuilder<Location> builder)
         {
             builder.ToTable("ibge");
 

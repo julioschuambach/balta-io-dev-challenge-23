@@ -2,16 +2,16 @@
 
 namespace DevChallenge.Models
 {
-    public class Ibge
+    public class Location
     {
         public string Id { get; private set; }
         public string State { get; private set; }
         public string City { get; private set; }
 
-        public Ibge(string id, string state, string city)
+        public Location(string id, string state, string city)
             => (Id, State, City) = (id, state, city);
 
-        public void Update(IbgeViewModel viewModel)
+        public void Update(LocationViewModel viewModel)
             => (State, City) = (viewModel.State, viewModel.City);
     }
 }

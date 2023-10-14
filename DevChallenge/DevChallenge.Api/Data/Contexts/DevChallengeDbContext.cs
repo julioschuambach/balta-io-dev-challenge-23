@@ -7,7 +7,7 @@ namespace DevChallenge.Data.Contexts
     public class DevChallengeDbContext : DbContext
     {
         private readonly string _connectionString = "Data Source = DevChallenge.db";
-        public DbSet<Ibge> Ibges { get; set; }
+        public DbSet<Location> Locations { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -16,7 +16,7 @@ namespace DevChallenge.Data.Contexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyConfiguration(new IbgeMapping());
+            modelBuilder.ApplyConfiguration(new LocationMapping());
         }
     }
 }
