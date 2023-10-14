@@ -53,6 +53,23 @@ namespace DevChallenge
                     return Results.Problem(ex.Message);
                 }
             });
+
+            app.MapGet("/ibges", ([FromServices] DevChallengeDbContext context) =>
+            {
+                try
+                {
+                    var ibges = context.Ibges
+                                       .AsNoTracking()
+                                       .OrderBy(x => x.City)
+                                       .ToList();
+
+                    return Results.Ok(ibges);
+                }
+                catch (Exception ex)
+                {
+                    return Results.Problem(ex.Message);
+                }
+            });
         }
     }
 }
