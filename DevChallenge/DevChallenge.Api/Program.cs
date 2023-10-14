@@ -91,6 +91,24 @@ namespace DevChallenge
                     return Results.Problem(ex.Message);
                 }
             });
+
+            app.MapGet("/ibges/cities/{city}", ([FromServices] DevChallengeDbContext context, [FromRoute] string city) =>
+            {
+                try
+                {
+                    var ibges = context.Ibges
+                                       .AsNoTracking()
+                                       .Where(x => x.City.ToLower() == city.ToLower())
+                                       .OrderBy(x => x.State)
+                                       .ToList();
+
+                    return Results.Ok(ibges);
+                }
+                catch (Exception ex)
+                {
+                    return Results.Problem(ex.Message);
+                }
+            });
         }
     }
 }
