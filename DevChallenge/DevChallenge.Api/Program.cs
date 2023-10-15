@@ -272,6 +272,23 @@ namespace DevChallenge
                     return Results.Problem(ex.Message);
                 }
             });
+
+            app.MapGet("/users", ([FromServices] DevChallengeDbContext context) =>
+            {
+                try
+                {
+                    var users = context.Users
+                                       .AsNoTracking()
+                                       .OrderBy(x => x.Username)
+                                       .ToList();
+
+                    return Results.Ok(users);
+                }
+                catch (Exception ex)
+                {
+                    return Results.Problem(ex.Message);
+                }
+            }).RequireAuthorization("admin");
         }
     }
 }
