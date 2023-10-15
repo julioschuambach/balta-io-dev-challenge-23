@@ -252,6 +252,26 @@ namespace DevChallenge
                     return Results.Problem(ex.Message);
                 }
             });
+
+            app.MapPost("/signin", ([FromServices] DevChallengeDbContext context, [FromServices] TokenService tokenService, [FromBody] SignInViewModel viewModel) =>
+            {
+                try
+                {
+                    var user = context.Users.FirstOrDefault(x => x.Username == viewModel.Username);
+
+                    if (user == null || user.Password != viewModel.Password)
+                    {
+                        return Results.BadRequest("Username or password incorrect.");
+                    }
+
+                    var token = tokenService.GenerateToken(user);
+                    return Results.Ok(token);
+                }
+                catch (Exception ex)
+                {
+                    return Results.Problem(ex.Message);
+                }
+            });
         }
     }
 }
