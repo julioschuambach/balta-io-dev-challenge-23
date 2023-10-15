@@ -17,5 +17,17 @@ CREATE INDEX IX_IBGE_State ON ibge (state ASC);
 DROP INDEX IF EXISTS IX_IBGE_Id;
 CREATE INDEX IX_IBGE_Id ON ibge (id ASC);
 
+-- Table: users
+DROP TABLE IF EXISTS users;
+CREATE TABLE users ([id] CHAR (36) PRIMARY KEY NOT NULL, [username] VARCHAR (50) NOT NULL, [password] CHAR (50) NOT NULL, [role] CHAR (15) NOT NULL);
+
+-- Index: IX_USER_Id
+DROP INDEX IF EXISTS IX_USER_Id;
+CREATE INDEX IX_USER_Id ON users ([id]);
+
+-- Index: IX_USER_Username
+DROP INDEX IF EXISTS IX_USER_Username;
+CREATE INDEX IX_USER_Username ON users ([username]);
+
 COMMIT TRANSACTION;
 PRAGMA foreign_keys = on;
