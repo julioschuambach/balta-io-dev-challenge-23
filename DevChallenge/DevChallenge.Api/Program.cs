@@ -1,4 +1,5 @@
 using DevChallenge.Api;
+using DevChallenge.Api.Services;
 using DevChallenge.Api.ViewModels;
 using DevChallenge.Data.Contexts;
 using DevChallenge.Helpers;
@@ -61,6 +62,7 @@ namespace DevChallenge
         private static void ConfigureServices(WebApplicationBuilder builder)
         {
             builder.Services.AddDbContext<DevChallengeDbContext>();
+            builder.Services.AddTransient<TokenService>();
         }
 
         private static void MapEndpoints(WebApplication app)

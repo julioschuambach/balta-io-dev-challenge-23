@@ -6,9 +6,9 @@ using System.Text;
 
 namespace DevChallenge.Api.Services
 {
-    public static class TokenService
+    public class TokenService
     {
-        public static string GenerateToken(User user)
+        public string GenerateToken(User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(Settings.Secret);
