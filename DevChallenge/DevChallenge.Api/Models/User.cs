@@ -1,4 +1,6 @@
-﻿namespace DevChallenge.Api.Models
+﻿using DevChallenge.Api.ViewModels;
+
+namespace DevChallenge.Api.Models
 {
     public class User
     {
@@ -7,11 +9,13 @@
         public string Password { get; private set; }
         public string Role { get; private set; }
 
-        public User(string username, string password)
+        public User() { }
+
+        public User(SignUpViewModel viewModel)
         {
             Id = Guid.NewGuid();
-            Username = username;
-            Password = password;
+            Username = viewModel.Username;
+            Password = viewModel.Password;
             Role = "user";
         }
     }

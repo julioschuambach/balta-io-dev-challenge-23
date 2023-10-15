@@ -1,4 +1,5 @@
 using DevChallenge.Api;
+using DevChallenge.Api.Models;
 using DevChallenge.Api.Services;
 using DevChallenge.Api.ViewModels;
 using DevChallenge.Data.Contexts;
@@ -223,6 +224,28 @@ namespace DevChallenge
                     context.SaveChanges();
 
                     return Results.Ok(location);
+                }
+                catch (Exception ex)
+                {
+                    return Results.Problem(ex.Message);
+                }
+            });
+
+            app.MapPost("/signup", ([FromServices] DevChallengeDbContext context, [FromBody] SignUpViewModel viewModel) =>
+            {
+                if (viewModel.Password != viewModel.ConfirmPassword)
+                {
+                    return Results.BadRequest("The passwords don't match!");
+                }
+
+                try
+                {
+                    User user = new(viewModel);
+
+                    context.Users.Add(user);
+                    context.SaveChanges();
+
+                    return Results.Ok(user);
                 }
                 catch (Exception ex)
                 {

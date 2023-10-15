@@ -1,4 +1,5 @@
 ﻿using DevChallenge.Api.Data.Mappings;
+using DevChallenge.Api.Models;
 using DevChallenge.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,6 +9,7 @@ namespace DevChallenge.Data.Contexts
     {
         private readonly string _connectionString = "Data Source = DevChallenge.db";
         public DbSet<Location> Locations { get; set; }
+        public DbSet<User> Users { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
