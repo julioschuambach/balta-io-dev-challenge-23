@@ -1,9 +1,13 @@
+using DevChallenge.Api;
 using DevChallenge.Api.ViewModels;
 using DevChallenge.Data.Contexts;
 using DevChallenge.Helpers;
 using DevChallenge.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace DevChallenge
 {
@@ -12,12 +16,35 @@ namespace DevChallenge
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            ConfigureAuthentication(builder);
             ConfigureServices(builder);
             var app = builder.Build();
 
             MapEndpoints(app);
+            app.UseAuthentication();
 
             app.Run();
+        }
+
+        private static void ConfigureAuthentication(WebApplicationBuilder builder)
+        {
+            var key = Encoding.ASCII.GetBytes(Settings.Secret);
+            builder.Services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
         }
 
         private static void ConfigureServices(WebApplicationBuilder builder)
