@@ -80,7 +80,7 @@ namespace DevChallenge
                 {
                     return Results.Problem(ex.Message);
                 }
-            });
+            }).RequireAuthorization("admin");
 
             app.MapGet("/create-database", ([FromServices] DevChallengeDbContext context) =>
             {
@@ -95,7 +95,7 @@ namespace DevChallenge
                 {
                     return Results.Problem(ex.Message);
                 }
-            });
+            }).AllowAnonymous();
 
             app.MapGet("/locations", ([FromServices] DevChallengeDbContext context) =>
             {
@@ -112,7 +112,7 @@ namespace DevChallenge
                 {
                     return Results.Problem(ex.Message);
                 }
-            });
+            }).RequireAuthorization();
 
             app.MapGet("/locations/{id}", ([FromServices] DevChallengeDbContext context, [FromRoute] string id) =>
             {
@@ -133,7 +133,7 @@ namespace DevChallenge
                 {
                     return Results.Problem(ex.Message);
                 }
-            });
+            }).RequireAuthorization();
 
             app.MapGet("/locations/cities/{city}", ([FromServices] DevChallengeDbContext context, [FromRoute] string city) =>
             {
@@ -151,7 +151,7 @@ namespace DevChallenge
                 {
                     return Results.Problem(ex.Message);
                 }
-            });
+            }).RequireAuthorization();
 
             app.MapGet("/locations/states/{state}", ([FromServices] DevChallengeDbContext context, [FromRoute] string state) =>
             {
@@ -169,7 +169,7 @@ namespace DevChallenge
                 {
                     return Results.Problem(ex.Message);
                 }
-            });
+            }).RequireAuthorization();
 
             app.MapPost("/locations", ([FromServices] DevChallengeDbContext context, [FromBody] Location location) =>
             {
@@ -184,7 +184,7 @@ namespace DevChallenge
                 {
                     return Results.Problem(ex.Message);
                 }
-            });
+            }).RequireAuthorization();
 
             app.MapPut("/locations/{id}", ([FromServices] DevChallengeDbContext context, [FromRoute] string id, [FromBody] LocationViewModel viewModel) =>
             {
@@ -207,7 +207,7 @@ namespace DevChallenge
                 {
                     return Results.Problem(ex.Message);
                 }
-            });
+            }).RequireAuthorization();
 
             app.MapDelete("/locations/{id}", ([FromServices] DevChallengeDbContext context, [FromRoute] string id) =>
             {
@@ -229,7 +229,7 @@ namespace DevChallenge
                 {
                     return Results.Problem(ex.Message);
                 }
-            });
+            }).RequireAuthorization();
 
             app.MapPost("/signup", ([FromServices] DevChallengeDbContext context, [FromBody] SignUpViewModel viewModel) =>
             {
