@@ -17,6 +17,7 @@ namespace DevChallenge.Data.Contexts
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new LocationMapping());
+            modelBuilder.ApplyConfiguration(new UserMapping());
         }
     }
 }
