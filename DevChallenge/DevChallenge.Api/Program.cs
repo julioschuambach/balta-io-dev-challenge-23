@@ -17,11 +17,13 @@ namespace DevChallenge
         {
             var builder = WebApplication.CreateBuilder(args);
             ConfigureAuthentication(builder);
+            ConfigureAuthorization(builder);
             ConfigureServices(builder);
             var app = builder.Build();
 
             MapEndpoints(app);
             app.UseAuthentication();
+            app.UseAuthorization();
 
             app.Run();
         }
@@ -44,6 +46,15 @@ namespace DevChallenge
                     ValidateIssuer = false,
                     ValidateAudience = false
                 };
+            });
+        }
+
+        private static void ConfigureAuthorization(WebApplicationBuilder builder)
+        {
+            builder.Services.AddAuthorization(x =>
+            {
+                x.AddPolicy("Admin", policy => policy.RequireRole("admin"));
+                x.AddPolicy("User", policy => policy.RequireRole("user"));
             });
         }
 
