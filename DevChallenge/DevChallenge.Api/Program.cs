@@ -1,4 +1,6 @@
 using DevChallenge.Api;
+using DevChallenge.Api.Data.Interfaces.Repositories;
+using DevChallenge.Api.Data.Repositories;
 using DevChallenge.Api.Models;
 using DevChallenge.Api.Services;
 using DevChallenge.Api.ViewModels;
@@ -64,6 +66,8 @@ namespace DevChallenge
         {
             builder.Services.AddDbContext<DevChallengeDbContext>();
             builder.Services.AddTransient<TokenService>();
+            builder.Services.AddTransient<IUserRepository, UserRepository>();
+            builder.Services.AddTransient<ILocationRepository, LocationRepository>();
         }
 
         private static void MapEndpoints(WebApplication app)
@@ -97,14 +101,11 @@ namespace DevChallenge
                 }
             }).AllowAnonymous();
 
-            app.MapGet("/locations", ([FromServices] DevChallengeDbContext context) =>
+            app.MapGet("/locations", ([FromServices] ILocationRepository repository) =>
             {
                 try
                 {
-                    var locations = context.Locations
-                                       .AsNoTracking()
-                                       .OrderBy(x => x.City)
-                                       .ToList();
+                    var locations = repository.GetAllLocations();
 
                     return Results.Ok(locations);
                 }
@@ -114,13 +115,11 @@ namespace DevChallenge
                 }
             }).RequireAuthorization();
 
-            app.MapGet("/locations/{id}", ([FromServices] DevChallengeDbContext context, [FromRoute] string id) =>
+            app.MapGet("/locations/{id}", ([FromServices] ILocationRepository repository, [FromRoute] string id) =>
             {
                 try
                 {
-                    var location = context.Locations
-                                      .AsNoTracking()
-                                      .FirstOrDefault(x => x.Id == id);
+                    var location = repository.GetLocationById(id);
 
                     if (location == null)
                     {
@@ -135,15 +134,11 @@ namespace DevChallenge
                 }
             }).RequireAuthorization();
 
-            app.MapGet("/locations/cities/{city}", ([FromServices] DevChallengeDbContext context, [FromRoute] string city) =>
+            app.MapGet("/locations/cities/{city}", ([FromServices] ILocationRepository repository, [FromRoute] string city) =>
             {
                 try
                 {
-                    var locations = context.Locations
-                                       .AsNoTracking()
-                                       .Where(x => x.City.ToLower() == city.ToLower())
-                                       .OrderBy(x => x.State)
-                                       .ToList();
+                    var locations = repository.GetLocationsByCity(city);
 
                     return Results.Ok(locations);
                 }
@@ -153,15 +148,11 @@ namespace DevChallenge
                 }
             }).RequireAuthorization();
 
-            app.MapGet("/locations/states/{state}", ([FromServices] DevChallengeDbContext context, [FromRoute] string state) =>
+            app.MapGet("/locations/states/{state}", ([FromServices] ILocationRepository repository, [FromRoute] string state) =>
             {
                 try
                 {
-                    var locations = context.Locations
-                                      .AsNoTracking()
-                                      .Where(x => x.State.ToLower() == state.ToLower())
-                                      .OrderBy(x => x.City)
-                                      .ToList();
+                    var locations = repository.GetLocationsByState(state);
 
                     return Results.Ok(locations);
                 }
@@ -171,12 +162,11 @@ namespace DevChallenge
                 }
             }).RequireAuthorization();
 
-            app.MapPost("/locations", ([FromServices] DevChallengeDbContext context, [FromBody] Location location) =>
+            app.MapPost("/locations", ([FromServices] ILocationRepository repository, [FromBody] Location location) =>
             {
                 try
                 {
-                    context.Locations.Add(location);
-                    context.SaveChanges();
+                    repository.CreateLocation(location);
 
                     return Results.Created($"/locations/{location.Id}", location);
                 }
@@ -186,20 +176,16 @@ namespace DevChallenge
                 }
             }).RequireAuthorization();
 
-            app.MapPut("/locations/{id}", ([FromServices] DevChallengeDbContext context, [FromRoute] string id, [FromBody] LocationViewModel viewModel) =>
+            app.MapPut("/locations/{id}", ([FromServices] ILocationRepository repository, [FromRoute] string id, [FromBody] LocationViewModel viewModel) =>
             {
                 try
                 {
-                    var location = context.Locations.FirstOrDefault(x => x.Id == id);
+                    var location = repository.UpdateLocation(id, viewModel);
 
                     if (location == null)
                     {
                         return Results.NotFound();
                     }
-
-                    location.Update(viewModel);
-                    context.Locations.Update(location);
-                    context.SaveChanges();
 
                     return Results.Ok(location);
                 }
@@ -209,19 +195,16 @@ namespace DevChallenge
                 }
             }).RequireAuthorization();
 
-            app.MapDelete("/locations/{id}", ([FromServices] DevChallengeDbContext context, [FromRoute] string id) =>
+            app.MapDelete("/locations/{id}", ([FromServices] ILocationRepository repository, [FromRoute] string id) =>
             {
                 try
                 {
-                    var location = context.Locations.FirstOrDefault(x => x.Id == id);
+                    var location = repository.DeleteLocation(id);
 
                     if (location == null)
                     {
                         return Results.NotFound();
                     }
-
-                    context.Locations.Remove(location);
-                    context.SaveChanges();
 
                     return Results.Ok(location);
                 }
@@ -231,7 +214,7 @@ namespace DevChallenge
                 }
             }).RequireAuthorization();
 
-            app.MapPost("/signup", ([FromServices] DevChallengeDbContext context, [FromBody] SignUpViewModel viewModel) =>
+            app.MapPost("/signup", ([FromServices] IUserRepository repository, [FromBody] SignUpViewModel viewModel) =>
             {
                 if (viewModel.Password != viewModel.ConfirmPassword)
                 {
@@ -241,9 +224,7 @@ namespace DevChallenge
                 try
                 {
                     User user = new(viewModel);
-
-                    context.Users.Add(user);
-                    context.SaveChanges();
+                    repository.CreateUser(user);
 
                     return Results.Ok(user);
                 }
@@ -253,11 +234,11 @@ namespace DevChallenge
                 }
             });
 
-            app.MapPost("/signin", ([FromServices] DevChallengeDbContext context, [FromServices] TokenService tokenService, [FromBody] SignInViewModel viewModel) =>
+            app.MapPost("/signin", ([FromServices] IUserRepository repository, [FromServices] TokenService tokenService, [FromBody] SignInViewModel viewModel) =>
             {
                 try
                 {
-                    var user = context.Users.FirstOrDefault(x => x.Username == viewModel.Username);
+                    var user = repository.GetUserByUsername(viewModel.Username);
 
                     if (user == null || user.Password != viewModel.Password)
                     {
@@ -273,14 +254,11 @@ namespace DevChallenge
                 }
             });
 
-            app.MapGet("/users", ([FromServices] DevChallengeDbContext context) =>
+            app.MapGet("/users", ([FromServices] IUserRepository repository) =>
             {
                 try
                 {
-                    var users = context.Users
-                                       .AsNoTracking()
-                                       .OrderBy(x => x.Username)
-                                       .ToList();
+                    var users = repository.GetAllUsers();
 
                     return Results.Ok(users);
                 }
