@@ -2,10 +2,10 @@
 {
     public class SignInViewModel
     {
-        public string Username { get; private set; }
+        public string Email { get; private set; }
         public string Password { get; private set; }
 
-        public SignInViewModel(string username, string password)
-            => (Username, Password) = (username, password);
+        public SignInViewModel(string email, string password)
+            => (Email, Password) = (email, password);
     }
 }

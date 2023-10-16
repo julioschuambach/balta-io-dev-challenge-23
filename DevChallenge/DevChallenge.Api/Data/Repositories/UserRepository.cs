@@ -20,11 +20,11 @@ namespace DevChallenge.Api.Data.Repositories
             _context.SaveChanges();
         }
 
-        public User? GetUserByUsername(string username)
+        public User? GetUserByEmail(string email)
         {
             var user = _context.Users
                                .AsNoTracking()
-                               .FirstOrDefault(x => x.Username == username);
+                               .FirstOrDefault(x => x.Email == email);
 
             return user;
         }
@@ -33,7 +33,7 @@ namespace DevChallenge.Api.Data.Repositories
         {
             var users = _context.Users
                                 .AsNoTracking()
-                                .OrderBy(x => x.Username)
+                                .OrderBy(x => x.Email)
                                 .ToList();
 
             return users;

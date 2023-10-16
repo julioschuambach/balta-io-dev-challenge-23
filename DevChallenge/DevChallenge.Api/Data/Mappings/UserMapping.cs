@@ -18,8 +18,8 @@ namespace DevChallenge.Api.Data.Mappings
                    .HasMaxLength(36)
                    .IsRequired();
 
-            builder.Property(x => x.Username)
-                   .HasColumnName("username")
+            builder.Property(x => x.Email)
+                   .HasColumnName("email")
                    .HasColumnType("VARCHAR")
                    .HasMaxLength(50)
                    .IsRequired();
@@ -39,7 +39,7 @@ namespace DevChallenge.Api.Data.Mappings
             builder.HasIndex(x => x.Id, "IX_USER_Id")
                    .IsUnique();
 
-            builder.HasIndex(x => x.Username, "IX_USER_Username")
+            builder.HasIndex(x => x.Email, "IX_USER_Email")
                    .IsUnique();
         }
     }

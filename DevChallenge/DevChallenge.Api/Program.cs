@@ -238,11 +238,11 @@ namespace DevChallenge
             {
                 try
                 {
-                    var user = repository.GetUserByUsername(viewModel.Username);
+                    var user = repository.GetUserByEmail(viewModel.Email);
 
                     if (user == null || user.Password != viewModel.Password)
                     {
-                        return Results.BadRequest("Username or password incorrect.");
+                        return Results.BadRequest("Email or password incorrect.");
                     }
 
                     var token = tokenService.GenerateToken(user);

@@ -5,7 +5,7 @@ namespace DevChallenge.Api.Models
     public class User
     {
         public Guid Id { get; private set; }
-        public string Username { get; private set; }
+        public string Email { get; private set; }
         public string Password { get; private set; }
         public string Role { get; private set; }
 
@@ -14,7 +14,7 @@ namespace DevChallenge.Api.Models
         public User(SignUpViewModel viewModel)
         {
             Id = Guid.NewGuid();
-            Username = viewModel.Username;
+            Email = viewModel.Email;
             Password = viewModel.Password;
             Role = "user";
         }
