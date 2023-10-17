@@ -1,0 +1,33 @@
+PRAGMA foreign_keys = off;
+BEGIN TRANSACTION;
+
+-- Table: ibge
+DROP TABLE IF EXISTS ibge;
+CREATE TABLE ibge (id CHAR (7) PRIMARY KEY ASC NOT NULL, state CHAR (2) NOT NULL, city VARCHAR (80) NOT NULL);
+
+-- Index: IX_IBGE_City
+DROP INDEX IF EXISTS IX_IBGE_City;
+CREATE INDEX IX_IBGE_City ON ibge (city ASC);
+
+-- Index: IX_IBGE_State
+DROP INDEX IF EXISTS IX_IBGE_State;
+CREATE INDEX IX_IBGE_State ON ibge (state ASC);
+
+-- Index: IX_IBGE_Id
+DROP INDEX IF EXISTS IX_IBGE_Id;
+CREATE INDEX IX_IBGE_Id ON ibge (id ASC);
+
+-- Table: users
+DROP TABLE IF EXISTS users;
+CREATE TABLE users ([id] CHAR (36) PRIMARY KEY NOT NULL, [email] VARCHAR (50) NOT NULL, [password] CHAR (50) NOT NULL, [role] CHAR (15) NOT NULL);
+
+-- Index: IX_USER_Id
+DROP INDEX IF EXISTS IX_USER_Id;
+CREATE INDEX IX_USER_Id ON users ([id]);
+
+-- Index: IX_USER_Username
+DROP INDEX IF EXISTS IX_USER_Username;
+CREATE INDEX IX_USER_Email ON users ([email]);
+
+COMMIT TRANSACTION;
+PRAGMA foreign_keys = on;
