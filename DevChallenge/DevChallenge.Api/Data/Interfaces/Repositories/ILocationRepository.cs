@@ -5,12 +5,12 @@ namespace DevChallenge.Api.Data.Interfaces.Repositories
 {
     public interface ILocationRepository
     {
-        IEnumerable<Location> GetAllLocations();
-        Location? GetLocationById(string id);
-        IEnumerable<Location> GetLocationsByCity(string city);
-        IEnumerable<Location> GetLocationsByState(string state);
-        void CreateLocation(Location location);
-        Location? UpdateLocation(string id, LocationViewModel viewModel);
-        Location? DeleteLocation(string id);
+        Task<IEnumerable<Location>> GetAllLocations();
+        Task<Location?> GetLocationById(string id);
+        Task<IEnumerable<Location>> GetLocationsByCity(string city);
+        Task<IEnumerable<Location>> GetLocationsByState(string state);
+        Task CreateLocation(Location location);
+        Task<Location?> UpdateLocation(string id, LocationViewModel viewModel);
+        Task<Location?> DeleteLocation(string id);
     }
 }

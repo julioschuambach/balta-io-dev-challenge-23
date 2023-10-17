@@ -14,27 +14,27 @@ namespace DevChallenge.Api.Data.Repositories
             _context = context;
         }
 
-        public void CreateUser(User user)
+        public async Task CreateUser(User user)
         {
-            _context.Users.Add(user);
-            _context.SaveChanges();
+            await _context.Users.AddAsync(user);
+            await _context.SaveChangesAsync();
         }
 
-        public User? GetUserByEmail(string email)
+        public async Task<User?> GetUserByEmail(string email)
         {
-            var user = _context.Users
-                               .AsNoTracking()
-                               .FirstOrDefault(x => x.Email == email);
+            var user = await _context.Users
+                                     .AsNoTracking()
+                                     .FirstOrDefaultAsync(x => x.Email == email);
 
             return user;
         }
 
-        public IEnumerable<User> GetAllUsers()
+        public async Task<IEnumerable<User>> GetAllUsers()
         {
-            var users = _context.Users
-                                .AsNoTracking()
-                                .OrderBy(x => x.Email)
-                                .ToList();
+            var users = await _context.Users
+                                      .AsNoTracking()
+                                      .OrderBy(x => x.Email)
+                                      .ToListAsync();
 
             return users;
         }

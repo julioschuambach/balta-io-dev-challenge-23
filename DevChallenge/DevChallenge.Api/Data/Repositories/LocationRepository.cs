@@ -15,76 +15,76 @@ namespace DevChallenge.Api.Data.Repositories
             _context = context;
         }
 
-        public IEnumerable<Location> GetAllLocations()
+        public async Task<IEnumerable<Location>> GetAllLocations()
         {
-            var locations = _context.Locations
-                                    .AsNoTracking()
-                                    .OrderBy(x => x.City)
-                                    .ToList();
+            var locations = await _context.Locations
+                                          .AsNoTracking()
+                                          .OrderBy(x => x.City)
+                                          .ToListAsync();
 
             return locations;
         }
 
-        public Location? GetLocationById(string id)
+        public async Task<Location?> GetLocationById(string id)
         {
-            var location = _context.Locations
-                                   .AsNoTracking()
-                                   .FirstOrDefault(x => x.Id == id);
+            var location = await _context.Locations
+                                         .AsNoTracking()
+                                         .FirstOrDefaultAsync(x => x.Id == id);
 
             return location;
         }
 
-        public IEnumerable<Location> GetLocationsByCity(string city)
+        public async Task<IEnumerable<Location>> GetLocationsByCity(string city)
         {
-            var locations = _context.Locations
-                                    .AsNoTracking()
-                                    .Where(x => x.City.ToLower() == city.ToLower())
-                                    .OrderBy(x => x.State)
-                                    .ToList();
+            var locations = await _context.Locations
+                                          .AsNoTracking()
+                                          .Where(x => x.City.ToLower() == city.ToLower())
+                                          .OrderBy(x => x.State)
+                                          .ToListAsync();
 
             return locations;
         }
 
-        public IEnumerable<Location> GetLocationsByState(string state)
+        public async Task<IEnumerable<Location>> GetLocationsByState(string state)
         {
-            var locations = _context.Locations
-                                    .AsNoTracking()
-                                    .Where(x => x.State.ToLower() == state.ToLower())
-                                    .OrderBy(x => x.City)
-                                    .ToList();
+            var locations = await _context.Locations
+                                          .AsNoTracking()
+                                          .Where(x => x.State.ToLower() == state.ToLower())
+                                          .OrderBy(x => x.City)
+                                          .ToListAsync();
 
             return locations;
         }
 
-        public void CreateLocation(Location location)
+        public async Task CreateLocation(Location location)
         {
-            _context.Locations.Add(location);
-            _context.SaveChanges();
+            await _context.Locations.AddAsync(location);
+            await _context.SaveChangesAsync();
         }
 
-        public Location? UpdateLocation(string id, LocationViewModel viewModel)
+        public async Task<Location?> UpdateLocation(string id, LocationViewModel viewModel)
         {
-            var location = _context.Locations.FirstOrDefault(x => x.Id == id);
+            var location = await _context.Locations.FirstOrDefaultAsync(x => x.Id == id);
 
             if (location == null)
                 return null;
 
             location.Update(viewModel);
             _context.Locations.Update(location);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return location;
         }
 
-        public Location? DeleteLocation(string id)
+        public async Task<Location?> DeleteLocation(string id)
         {
-            var location = _context.Locations.FirstOrDefault(x => x.Id == id);
+            var location = await _context.Locations.FirstOrDefaultAsync(x => x.Id == id);
 
             if (location == null) 
                 return null;
 
             _context.Locations.Remove(location);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return location;
         }

@@ -4,8 +4,8 @@ namespace DevChallenge.Api.Data.Interfaces.Repositories
 {
     public interface IUserRepository
     {
-        void CreateUser(User user);
-        User? GetUserByEmail(string email);
-        IEnumerable<User> GetAllUsers();
+        Task CreateUser(User user);
+        Task<User?> GetUserByEmail(string email);
+        Task<IEnumerable<User>> GetAllUsers();
     }
 }
