@@ -84,7 +84,7 @@ namespace DevChallenge
                 {
                     return Results.Problem(ex.Message);
                 }
-            }).RequireAuthorization("admin");
+            }).RequireAuthorization("admin").Produces<string>();
 
             app.MapGet("/create-database", async ([FromServices] DevChallengeDbContext context) =>
             {
@@ -99,7 +99,7 @@ namespace DevChallenge
                 {
                     return Results.Problem(ex.Message);
                 }
-            }).AllowAnonymous();
+            }).Produces<string>();
 
             app.MapGet("/locations", async ([FromServices] ILocationRepository repository) =>
             {
@@ -113,7 +113,7 @@ namespace DevChallenge
                 {
                     return Results.Problem(ex.Message);
                 }
-            }).RequireAuthorization();
+            }).Produces<IEnumerable<Location>>().RequireAuthorization();
 
             app.MapGet("/locations/{id}", async ([FromServices] ILocationRepository repository, [FromRoute] string id) =>
             {
@@ -132,7 +132,7 @@ namespace DevChallenge
                 {
                     return Results.Problem(ex.Message);
                 }
-            }).RequireAuthorization();
+            }).Produces<Location>().RequireAuthorization();
 
             app.MapGet("/locations/cities/{city}", async ([FromServices] ILocationRepository repository, [FromRoute] string city) =>
             {
@@ -146,7 +146,7 @@ namespace DevChallenge
                 {
                     return Results.Problem(ex.Message);
                 }
-            }).RequireAuthorization();
+            }).Produces<IEnumerable<Location>>().RequireAuthorization();
 
             app.MapGet("/locations/states/{state}", async ([FromServices] ILocationRepository repository, [FromRoute] string state) =>
             {
@@ -160,7 +160,7 @@ namespace DevChallenge
                 {
                     return Results.Problem(ex.Message);
                 }
-            }).RequireAuthorization();
+            }).Produces<IEnumerable<Location>>().RequireAuthorization();
 
             app.MapPost("/locations", async ([FromServices] ILocationRepository repository, [FromBody] Location location) =>
             {
@@ -174,7 +174,7 @@ namespace DevChallenge
                 {
                     return Results.Problem(ex.Message);
                 }
-            }).RequireAuthorization();
+            }).Produces<Location>().RequireAuthorization();
 
             app.MapPut("/locations/{id}", async ([FromServices] ILocationRepository repository, [FromRoute] string id, [FromBody] LocationViewModel viewModel) =>
             {
@@ -193,7 +193,7 @@ namespace DevChallenge
                 {
                     return Results.Problem(ex.Message);
                 }
-            }).RequireAuthorization();
+            }).Produces<Location>().RequireAuthorization();
 
             app.MapDelete("/locations/{id}", async ([FromServices] ILocationRepository repository, [FromRoute] string id) =>
             {
@@ -212,7 +212,7 @@ namespace DevChallenge
                 {
                     return Results.Problem(ex.Message);
                 }
-            }).RequireAuthorization();
+            }).Produces<Location>().RequireAuthorization();
 
             app.MapPost("/signup", async ([FromServices] IUserRepository repository, [FromBody] SignUpViewModel viewModel) =>
             {
@@ -232,7 +232,7 @@ namespace DevChallenge
                 {
                     return Results.Problem(ex.Message);
                 }
-            });
+            }).Produces<User>();
 
             app.MapPost("/signin", async ([FromServices] IUserRepository repository, [FromServices] TokenService tokenService, [FromBody] SignInViewModel viewModel) =>
             {
@@ -252,7 +252,7 @@ namespace DevChallenge
                 {
                     return Results.Problem(ex.Message);
                 }
-            });
+            }).Produces<string>();
 
             app.MapGet("/users", async ([FromServices] IUserRepository repository) =>
             {
@@ -266,7 +266,7 @@ namespace DevChallenge
                 {
                     return Results.Problem(ex.Message);
                 }
-            }).RequireAuthorization("admin");
+            }).Produces<IEnumerable<User>>().RequireAuthorization("admin");
         }
     }
 }
