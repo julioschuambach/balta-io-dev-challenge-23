@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Text;
 
 namespace DevChallenge
@@ -20,16 +21,28 @@ namespace DevChallenge
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            ConfigureAuthentication(builder);
-            ConfigureAuthorization(builder);
+            
             ConfigureServices(builder);
             var app = builder.Build();
 
             MapEndpoints(app);
             app.UseAuthentication();
             app.UseAuthorization();
-
+            app.UseSwagger();
+            app.UseSwaggerUI();
             app.Run();
+        }
+
+        private static void ConfigureServices(WebApplicationBuilder builder)
+        {
+            builder.Services.AddDbContext<DevChallengeDbContext>();
+            builder.Services.AddTransient<TokenService>();
+            builder.Services.AddTransient<IUserRepository, UserRepository>();
+            builder.Services.AddTransient<ILocationRepository, LocationRepository>();
+
+            ConfigureAuthentication(builder);
+            ConfigureAuthorization(builder);
+            ConfigureSwagger(builder);
         }
 
         private static void ConfigureAuthentication(WebApplicationBuilder builder)
@@ -62,12 +75,28 @@ namespace DevChallenge
             });
         }
 
-        private static void ConfigureServices(WebApplicationBuilder builder)
+        private static void ConfigureSwagger(WebApplicationBuilder builder)
         {
-            builder.Services.AddDbContext<DevChallengeDbContext>();
-            builder.Services.AddTransient<TokenService>();
-            builder.Services.AddTransient<IUserRepository, UserRepository>();
-            builder.Services.AddTransient<ILocationRepository, LocationRepository>();
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "balta.io Dev Challenge 23",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Júlio Schuambach",
+                        Url = new Uri("https://github.com/julioschuambach"),
+                        Email = "julioschuambach.dev@gmail.com"
+                    },
+                    License = new OpenApiLicense
+                    {
+                        Name = "MIT License",
+                        Url = new Uri("https://opensource.org/license/mit/")
+                    }
+                });
+            });
         }
 
         private static void MapEndpoints(WebApplication app)
