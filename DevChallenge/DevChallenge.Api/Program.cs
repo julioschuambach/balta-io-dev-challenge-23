@@ -101,50 +101,50 @@ namespace DevChallenge
 
         private static void MapEndpoints(WebApplication app)
         {
-            app.MapGet("/sql-script", () =>
+            app.MapGet("/v1/sql-script", () =>
             {
                 var script = ResourcesHelper.GetSqlScript();
 
                 try
                 {
-                    return Results.Ok(script);
+                    return Results.Ok(new ResultViewModel<object>(script, new()));
                 }
                 catch (Exception ex)
                 {
                     return Results.Problem(ex.Message);
                 }
-            }).RequireAuthorization("admin").Produces<string>();
+            }).Produces<ResultViewModel<object>>().RequireAuthorization("admin");
 
-            app.MapGet("/create-database", async ([FromServices] DevChallengeDbContext context) =>
+            app.MapGet("/v1/create-database", async ([FromServices] DevChallengeDbContext context) =>
             {
                 var script = ResourcesHelper.GetSqlScript();
 
                 try
                 {
                     await context.Database.ExecuteSqlRawAsync(script);
-                    return Results.Ok("Database created successfully!");
+                    return Results.Ok(new ResultViewModel<object>("Database created successfully!", new()));
                 }
                 catch (Exception ex)
                 {
                     return Results.Problem(ex.Message);
                 }
-            }).Produces<string>();
+            }).Produces<ResultViewModel<object>>();
 
-            app.MapGet("/locations", async ([FromServices] ILocationRepository repository) =>
+            app.MapGet("/v1/locations", async ([FromServices] ILocationRepository repository) =>
             {
                 try
                 {
                     var locations = await repository.GetAllLocations();
 
-                    return Results.Ok(locations);
+                    return Results.Ok(new ResultViewModel<IEnumerable<Location>>(locations));
                 }
                 catch (Exception ex)
                 {
                     return Results.Problem(ex.Message);
                 }
-            }).Produces<IEnumerable<Location>>().RequireAuthorization();
+            }).Produces<ResultViewModel<IEnumerable<Location>>>().RequireAuthorization();
 
-            app.MapGet("/locations/{id}", async ([FromServices] ILocationRepository repository, [FromRoute] string id) =>
+            app.MapGet("/v1/locations/{id}", async ([FromServices] ILocationRepository repository, [FromRoute] string id) =>
             {
                 try
                 {
@@ -155,43 +155,43 @@ namespace DevChallenge
                         return Results.NotFound();
                     }
 
-                    return Results.Ok(location);
+                    return Results.Ok(new ResultViewModel<Location>(location));
                 }
                 catch (Exception ex)
                 {
                     return Results.Problem(ex.Message);
                 }
-            }).Produces<Location>().RequireAuthorization();
+            }).Produces<ResultViewModel<Location>>().RequireAuthorization();
 
-            app.MapGet("/locations/cities/{city}", async ([FromServices] ILocationRepository repository, [FromRoute] string city) =>
+            app.MapGet("/v1/locations/cities/{city}", async ([FromServices] ILocationRepository repository, [FromRoute] string city) =>
             {
                 try
                 {
                     var locations = await repository.GetLocationsByCity(city);
 
-                    return Results.Ok(locations);
+                    return Results.Ok(new ResultViewModel<IEnumerable<Location>>(locations));
                 }
                 catch (Exception ex)
                 {
                     return Results.Problem(ex.Message);
                 }
-            }).Produces<IEnumerable<Location>>().RequireAuthorization();
+            }).Produces<ResultViewModel<IEnumerable<Location>>>().RequireAuthorization();
 
-            app.MapGet("/locations/states/{state}", async ([FromServices] ILocationRepository repository, [FromRoute] string state) =>
+            app.MapGet("/v1/locations/states/{state}", async ([FromServices] ILocationRepository repository, [FromRoute] string state) =>
             {
                 try
                 {
                     var locations = await repository.GetLocationsByState(state);
 
-                    return Results.Ok(locations);
+                    return Results.Ok(new ResultViewModel<IEnumerable<Location>>(locations));
                 }
                 catch (Exception ex)
                 {
                     return Results.Problem(ex.Message);
                 }
-            }).Produces<IEnumerable<Location>>().RequireAuthorization();
+            }).Produces<ResultViewModel<IEnumerable<Location>>>().RequireAuthorization();
 
-            app.MapPost("/locations", async ([FromServices] ILocationRepository repository, [FromBody] Location location) =>
+            app.MapPost("/v1/locations", async ([FromServices] ILocationRepository repository, [FromBody] Location location) =>
             {
                 try
                 {
@@ -205,7 +205,7 @@ namespace DevChallenge
                 }
             }).Produces<Location>().RequireAuthorization();
 
-            app.MapPut("/locations/{id}", async ([FromServices] ILocationRepository repository, [FromRoute] string id, [FromBody] LocationViewModel viewModel) =>
+            app.MapPut("/v1/locations/{id}", async ([FromServices] ILocationRepository repository, [FromRoute] string id, [FromBody] LocationViewModel viewModel) =>
             {
                 try
                 {
@@ -216,15 +216,15 @@ namespace DevChallenge
                         return Results.NotFound();
                     }
 
-                    return Results.Ok(location);
+                    return Results.Ok(new ResultViewModel<Location>(location));
                 }
                 catch (Exception ex)
                 {
                     return Results.Problem(ex.Message);
                 }
-            }).Produces<Location>().RequireAuthorization();
+            }).Produces<ResultViewModel<Location>>().RequireAuthorization();
 
-            app.MapDelete("/locations/{id}", async ([FromServices] ILocationRepository repository, [FromRoute] string id) =>
+            app.MapDelete("/v1/locations/{id}", async ([FromServices] ILocationRepository repository, [FromRoute] string id) =>
             {
                 try
                 {
@@ -235,15 +235,15 @@ namespace DevChallenge
                         return Results.NotFound();
                     }
 
-                    return Results.Ok(location);
+                    return Results.Ok(new ResultViewModel<Location>(location));
                 }
                 catch (Exception ex)
                 {
                     return Results.Problem(ex.Message);
                 }
-            }).Produces<Location>().RequireAuthorization();
+            }).Produces<ResultViewModel<Location>>().RequireAuthorization();
 
-            app.MapPost("/signup", async ([FromServices] IUserRepository repository, [FromBody] SignUpViewModel viewModel) =>
+            app.MapPost("/v1/signup", async ([FromServices] IUserRepository repository, [FromBody] SignUpViewModel viewModel) =>
             {
                 if (viewModel.Password != viewModel.ConfirmPassword)
                 {
@@ -255,15 +255,15 @@ namespace DevChallenge
                     User user = new(viewModel);
                     await repository.CreateUser(user);
 
-                    return Results.Ok(user);
+                    return Results.Ok(new ResultViewModel<User>(user));
                 }
                 catch (Exception ex)
                 {
                     return Results.Problem(ex.Message);
                 }
-            }).Produces<User>();
+            }).Produces<ResultViewModel<User>>();
 
-            app.MapPost("/signin", async ([FromServices] IUserRepository repository, [FromServices] TokenService tokenService, [FromBody] SignInViewModel viewModel) =>
+            app.MapPost("/v1/signin", async ([FromServices] IUserRepository repository, [FromServices] TokenService tokenService, [FromBody] SignInViewModel viewModel) =>
             {
                 try
                 {
@@ -275,27 +275,27 @@ namespace DevChallenge
                     }
 
                     var token = tokenService.GenerateToken(user);
-                    return Results.Ok(token);
+                    return Results.Ok(new ResultViewModel<object>(token, new()));
                 }
                 catch (Exception ex)
                 {
                     return Results.Problem(ex.Message);
                 }
-            }).Produces<string>();
+            }).Produces<ResultViewModel<object>>();
 
-            app.MapGet("/users", async ([FromServices] IUserRepository repository) =>
+            app.MapGet("/v1/users", async ([FromServices] IUserRepository repository) =>
             {
                 try
                 {
                     var users = await repository.GetAllUsers();
 
-                    return Results.Ok(users);
+                    return Results.Ok(new ResultViewModel<IEnumerable<User>>(users));
                 }
                 catch (Exception ex)
                 {
                     return Results.Problem(ex.Message);
                 }
-            }).Produces<IEnumerable<User>>().RequireAuthorization("admin");
+            }).Produces<ResultViewModel<IEnumerable<User>>>().RequireAuthorization("admin");
         }
     }
 }
